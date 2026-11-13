@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PhishGuard AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#070b1a;--card:#0e1530;--line:#1d2a52;--tx:#eaf0ff;--mut:#8fa0c8;--g:#39ff88;--b:#38bdf8;--ok:#39ff88;--warn:#fbbf24;--bad:#ff4d5e;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;min-height:100vh;background:radial-gradient(ellipse 80% 50% at 50% -10%,rgba(57,255,136,.14),transparent 70%),var(--bg);color:var(--tx);font-family:'Space Grotesk',system-ui,sans-serif;line-height:1.5}
+.mono{font-family:'JetBrains Mono',ui-monospace,monospace}
+.wrap{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
+header{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-bottom:28px}
+.logo{font-weight:700;font-size:20px;color:var(--g)}
+nav{display:flex;gap:6px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:4px}
+nav button{background:none;border:0;color:var(--mut);font:500 14px 'Space Grotesk',sans-serif;padding:8px 14px;border-radius:9px;cursor:pointer}
+nav button.on{background:rgba(57,255,136,.12);color:var(--g)}
+h1{font-size:clamp(28px,5vw,44px);line-height:1.15;margin:0 0 12px}
+.g{color:var(--g)}.b{color:var(--b)}
+.sub{color:var(--mut);max-width:680px;margin:0 0 20px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px}
+.ex{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.chip{background:transparent;border:1px solid var(--line);color:var(--b);border-radius:12px;padding:7px 14px;font:500 13px 'Space Grotesk',sans-serif;cursor:pointer}
+.chip:hover{border-color:var(--b)}
+textarea{width:100%;background:#0a1128;border:1px solid var(--line);border-radius:12px;color:var(--tx);padding:14px;font:14px/1.5 'JetBrains Mono',monospace;resize:vertical}
+textarea:focus{outline:none;border-color:var(--g)}
+.go{margin-top:14px;background:var(--g);color:#04210f;border:0;border-radius:12px;padding:13px 26px;font:700 16px 'Space Grotesk',sans-serif;cursor:pointer;box-shadow:0 0 24px rgba(57,255,136,.45)}
+.go:disabled{opacity:.35;box-shadow:none;cursor:not-allowed}
+.scan{position:relative;overflow:hidden;margin-top:20px;height:90px;display:flex;align-items:center;justify-content:center;color:var(--g);font-family:'JetBrains Mono',monospace;font-size:14px}
+.scan::before{content:"";position:absolute;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--g),transparent);box-shadow:0 0 18px var(--g);animation:sc 1.2s linear infinite}
+.scan::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(57,255,136,.06) 0 2px,transparent 2px 4px)}
+@keyframes sc{0%{top:-4px}100%{top:100%}}
+.grid{display:grid;gap:16px;grid-template-columns:repeat(3,1fr);margin-top:22px}
+.span2{grid-column:span 2}
+.card h3{margin:0 0 12px;font-size:16px}
+.ring{position:relative;width:170px;height:170px;margin:4px auto 12px}
+.ring svg{transform:rotate(-90deg)}
+.ring .n{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:700 42px 'JetBrains Mono',monospace}
+.badge{display:block;text-align:center;font:700 12px 'JetBrains Mono',monospace;padding:8px 10px;border-radius:10px;border:1px solid currentColor}
+ul.l{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+ul.l li{padding-left:24px;position:relative;font-size:14px}
+ul.l li::before{position:absolute;left:0;top:0;font-weight:700}
+ul.r li::before{content:"●";color:var(--bad);font-size:11px;top:4px}
+ul.k li::before{content:"✓";color:var(--ok)}
+pre{margin:12px 0 0;background:#0a1128;border:1px solid var(--line);border-radius:12px;padding:14px;overflow-x:auto;font:12.5px/1.5 'JetBrains Mono',monospace;color:var(--b)}
+.tips{display:grid;gap:16px;grid-template-columns:repeat(3,1fr)}
+.tip .num{font:700 30px 'JetBrains Mono',monospace;color:var(--g);margin-bottom:6px}
+.tip h3{margin:0 0 6px}.tip p{margin:0;color:var(--mut);font-size:14px}
+.hrow{display:flex;gap:14px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+.hrow:last-child{border:0}
+.hs{font:700 22px 'JetBrains Mono',monospace;min-width:48px;text-align:center}
+.hm{flex:1;min-width:0}.hm .t{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--mut)}
+.hm .d{font-size:11px;color:var(--mut)}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.hidden{display:none}
+@media(max-width:800px){.grid,.tips{grid-template-columns:1fr}.span2{grid-column:auto}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="logo mono">◈ PhishGuard AI</div>
+  <nav id="nav"><button data-t="a" class="on">Analizza</button><button data-t="c">Come riconoscerlo</button><button data-t="s">Storico</button></nav>
+</header>
+
+<section id="t-a">
+  <h1>Analizzatore di <span class="g">Phishing</span> &amp; Minacce Digitali con <span class="b">IA</span></h1>
+  <p class="sub">Incolla il testo di un’email, SMS o messaggio sospetto e premi “Analizza con IA”: l’analisi euristica ti dirà quanto è pericoloso.</p>
+  <div class="ex">
+    <button class="chip" data-ex="banca">Email Banca</button>
+    <button class="chip" data-ex="poste">SMS Poste</button>
+    <button class="chip" data-ex="vincita">Vincita Fake</button>
+  </div>
+  <textarea id="txt" rows="9" placeholder="Incolla qui il messaggio sospetto..."></textarea>
+  <button class="go" id="go" disabled>Analizza con IA</button>
+  <div id="scan" class="card scan hidden">Analisi euristica e semantica in corso...</div>
+  <div id="res" class="grid hidden">
+    <div class="card">
+      <h3>Punteggio di rischio</h3>
+      <div class="ring">
+        <svg width="170" height="170" viewBox="0 0 120 120"><circle cx="60" cy="60" r="54" fill="none" stroke="#1d2a52" stroke-width="9"/><circle id="arc" cx="60" cy="60" r="54" fill="none" stroke-width="9" stroke-linecap="round" stroke-dasharray="339.3" stroke-dashoffset="339.3" style="transition:stroke-dashoffset 1.2s ease-out"/></svg>
+        <div class="n" id="num">0</div>
+      </div>
+      <span class="badge" id="badge"></span>
+    </div>
+    <div class="card span2"><h3>Campanelli d’allarme identificati</h3><ul class="l r" id="flags"></ul></div>
+    <div class="card"><h3>Raccomandazioni</h3><ul class="l k" id="recs"></ul></div>
+    <div class="card span2"><h3>Spiegazione dettagliata dell’IA</h3><p id="expl" style="margin:0;font-size:14px;color:var(--mut)"></p><pre id="json"></pre></div>
+  </div>
+</section>
+
+<section id="t-c" class="hidden">
+  <h1>Come <span class="g">riconoscerlo</span></h1>
+  <p class="sub">Cinque segnali che tradiscono quasi ogni tentativo di phishing.</p>
+  <div class="tips" id="tips"></div>
+</section>
+
+<section id="t-s" class="hidden">
+  <div class="top"><h1 style="font-size:28px;margin:0">Storico <span class="b">analisi</span></h1><button class="chip" id="clr">Svuota</button></div>
+  <div class="card" id="hist"></div>
+</section>
+</div>
+
+<script>
+const EX={
+banca:"Gentile Cliente, abbiamo rilevato un accesso anomalo al suo conto. Il suo account verrà SOSPESO entro 24 ore! Per evitare il blocco acceda subito e verifichi le sue credenziali: http://intesa-sicurezza-login.xyz/verifica — Servizio Clienti Banca",
+poste:"POSTE: il tuo pacco è in giacenza. Paga 1,99€ di spese di spedizione entro 48h o verrà restituito: https://bit.ly/poste-consegna",
+vincita:"CONGRATULAZIONI!!! Sei il vincitore di un iPhone 16 GRATIS! Clicca qui per riscattare il premio, paga solo 2€ di commissione: http://premio-amazon.top/claim"};
+const RULES=[
+[/urgent|entro\s+\d+\s*(ore|h\b|giorni)|bloccat|blocco|sospes|sospeso/i,20,"Linguaggio di urgenza o minaccia (es. account sospeso, scadenze strette)","Non farti mettere fretta: le scadenze imposte servono a farti agire senza pensare."],
+[/password|\bpin\b|\botp\b|iban|cvv|credenziali/i,25,"Richiesta di credenziali o dati sensibili (password, PIN, OTP, IBAN, CVV)","Non fornire mai password, PIN o OTP via messaggio: banche ed enti non li chiedono."],
+[/gentile\s+(cliente|utente)|caro\s+(cliente|utente)|egregio\s+(cliente|utente)/i,10,"Saluto generico invece del tuo nome","I messaggi autentici di solito riportano il tuo nome: diffida dei saluti generici."],
+[/bit\.ly|\.(xyz|top|ru)\b|-sicurezza|login-/i,25,"Link sospetto (URL accorciato, dominio anomalo o parole come “-sicurezza” e “login-”)","Non cliccare sul link: passa sopra con il cursore e verifica che il dominio sia quello ufficiale."],
+[/vint[oi]|vincit|premio|gratis|iphone/i,20,"Promessa di premi, vincite o regali","Se un premio non l’hai richiesto, è quasi certamente un’esca."],
+[/clicca|verifica\s+il\s+tuo|verifichi|acceda|accedi/i,12,"Invito a cliccare o a verificare i propri dati","Per verificare il tuo account, apri l’app o il sito ufficiale digitandolo a mano."],
+[/pacco|giacenza|consegna/i,10,"Falsa notifica di spedizione o consegna","Controlla lo stato della spedizione solo dal sito ufficiale del corriere."],
+[/banca|poste|inps|agenzia\s+delle\s+entrate/i,10,"Possibile impersonificazione di un ente (banca, Poste, INPS, Agenzia delle Entrate)","Contatta l’ente ai numeri ufficiali per confermare se la comunicazione è reale."],
+[/commissione|spese\s+di|\d+(?:[.,]\d+)?\s*€|€\s*\d+/i,10,"Richiesta di pagamento di piccole somme o commissioni","Non pagare nulla: le piccole somme servono a rubare i dati della tua carta."]];
+function analyze(t){
+  let s=0,flags=[],recs=[];
+  RULES.forEach(r=>{if(r[0].test(t)){s+=r[1];flags.push(r[2]);recs.push(r[3])}});
+  if((t.match(/!/g)||[]).length>=3){s+=6;flags.push("Uso eccessivo di punti esclamativi");recs.push("Toni enfatici e allarmistici sono tipici delle truffe.")}
+  s=Math.min(100,s);
+  const lvl=s>=65?"ALTO RISCHIO - PHISHING DETECTED":s>=30?"SOSPETTO - VERIFICARE":"BASSO RISCHIO - PROBABILMENTE SICURO";
+  if(!flags.length)flags.push("Nessun segnale evidente di phishing rilevato");
+  recs.push(s>=30?"Se hai già cliccato o inserito dati, cambia subito le password e avvisa la tua banca.":"Resta comunque prudente: in caso di dubbio verifica dal canale ufficiale.");
+  if(s>=65)recs.push("Elimina il messaggio e segnalalo (es. alla Polizia Postale).");
+  const ex=s>=65?`Il messaggio presenta ${flags.length} indicatori tipici del phishing combinati tra loro. L’analisi suggerisce un tentativo di truffa: evita di cliccare sui link e di rispondere.`:s>=30?`Sono stati rilevati ${flags.length} elementi anomali. Il messaggio potrebbe essere legittimo ma conviene verificarlo tramite i canali ufficiali prima di agire.`:"Non emergono segnali significativi. Il messaggio sembra poco rischioso, ma l’analisi euristica non sostituisce il tuo buon senso.";
+  return{riskScore:s,threatLevel:lvl,redFlags:flags,recommendations:recs,explanation:ex};
+}
+const col=s=>s>=65?"var(--bad)":s>=30?"var(--warn)":"var(--ok)";
+const $=id=>document.getElementById(id);
+const li=a=>a.map(x=>"<li>"+x.replace(/&/g,"&amp;").replace(/</g,"&lt;")+"</li>").join("");
+function show(t){["a","c","s"].forEach(k=>$("t-"+k).classList.toggle("hidden",k!==t));
+  document.querySelectorAll("#nav button").forEach(b=>b.classList.toggle("on",b.dataset.t===t));
+  if(t==="s")renderHist()}
+document.querySelectorAll("#nav button").forEach(b=>b.onclick=()=>show(b.dataset.t));
+document.querySelectorAll("[data-ex]").forEach(b=>b.onclick=()=>{$("txt").value=EX[b.dataset.ex];$("go").disabled=false});
+$("txt").oninput=()=>$("go").disabled=!$("txt").value.trim();
+function render(r){
+  const c=col(r.riskScore);
+  $("res").classList.remove("hidden");
+  $("flags").innerHTML=li(r.redFlags);$("recs").innerHTML=li(r.recommendations);
+  $("expl").textContent=r.explanation;$("json").textContent=JSON.stringify(r,null,2);
+  const arc=$("arc");arc.style.stroke=c;arc.style.filter="drop-shadow(0 0 6px "+c+")";
+  const b=$("badge");b.textContent=r.threatLevel;b.style.color=c;b.style.background="color-mix(in srgb,"+c+" 12%,transparent)";
+  $("num").style.color=c;
+  arc.style.transition="none";arc.setAttribute("stroke-dashoffset",339.3);void arc.getBoundingClientRect();
+  arc.style.transition="stroke-dashoffset 1.2s ease-out";arc.setAttribute("stroke-dashoffset",339.3*(1-r.riskScore/100));
+  let n=0;const st=performance.now();
+  (function f(t){const p=Math.min(1,(t-st)/1200);$("num").textContent=Math.round(r.riskScore*p);if(p<1)requestAnimationFrame(f)})(st);
+}
+function load(){try{return JSON.parse(localStorage.getItem("pg_hist")||"[]")}catch(e){return[]}}
+function save(a){try{localStorage.setItem("pg_hist",JSON.stringify(a))}catch(e){}}
+$("go").onclick=()=>{
+  const t=$("txt").value.trim();if(!t)return;
+  $("go").disabled=true;$("res").classList.add("hidden");$("scan").classList.remove("hidden");
+  setTimeout(()=>{
+    const r=analyze(t);$("scan").classList.add("hidden");$("go").disabled=false;render(r);
+    const h=load();h.unshift({s:r.riskScore,l:r.threatLevel,t:t.slice(0,120),d:new Date().toLocaleString("it-IT")});save(h.slice(0,10));
+  },2000);
+};
+function renderHist(){
+  const h=load();
+  $("hist").innerHTML=h.length?h.map(x=>`<div class="hrow"><div class="hs" style="color:${col(x.s)}">${x.s}</div><div class="hm"><div class="mono" style="font-size:11px;color:${col(x.s)}">${x.l}</div><div class="t"></div><div class="d">${x.d}</div></div></div>`).join(""):'<p style="margin:0;color:var(--mut)">Nessuna analisi salvata.</p>';
+  $("hist").querySelectorAll(".hm .t").forEach((e,i)=>e.textContent=h[i].t);
+}
+$("clr").onclick=()=>{save([]);renderHist()};
+const TIPS=[["Mittente sospetto","Controlla l’indirizzo reale: domini strani o lettere scambiate (p0ste.it)."],["Urgenza e minacce","“Account bloccato entro 24h”: la fretta serve a non farti ragionare."],["Link ingannevoli","Passa sopra al link senza cliccare: il dominio è quello ufficiale?"],["Richieste di dati","Banche e Poste non chiedono MAI password, PIN o OTP via messaggio."],["Troppo bello per essere vero","Premi, vincite e regali inattesi sono esche classiche."]];
+$("tips").innerHTML=TIPS.map((t,i)=>`<div class="card tip"><div class="num">0${i+1}</div><h3>${t[0]}</h3><p>${t[1]}</p></div>`).join("");
+</script>
+</body>
+</html>
